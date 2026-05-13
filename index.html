@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Konter Pro - Login</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* CSS INTERNAL */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: #050a18;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            color: white;
+        }
+
+        /* Background Glow Effects */
+        .background {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .circle {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+        }
+
+        .circle:nth-child(1) {
+            width: 300px;
+            height: 300px;
+            background: rgba(0, 102, 255, 0.2);
+            top: -50px;
+            left: -50px;
+        }
+
+        .circle:nth-child(2) {
+            width: 250px;
+            height: 250px;
+            background: rgba(0, 102, 255, 0.15);
+            bottom: -20px;
+            right: -20px;
+        }
+
+        /* Card Container (Glassmorphism) */
+        .login-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 40px 30px;
+            border-radius: 25px;
+            width: 100%;
+            max-width: 380px;
+            text-align: center;
+            box-shadow: 0 25px 45px rgba(0,0,0,0.3);
+            margin: 20px;
+        }
+
+        .logo-box {
+            width: 65px;
+            height: 65px;
+            background: linear-gradient(135deg, #2196f3, #003cff);
+            margin: 0 auto 20px;
+            border-radius: 18px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 30px;
+            box-shadow: 0 0 25px rgba(33, 150, 243, 0.4);
+        }
+
+        h1 {
+            font-size: 24px;
+            letter-spacing: 1px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            font-size: 12px;
+            color: #b0b0b0;
+            margin-bottom: 35px;
+        }
+
+        .input-group {
+            text-align: left;
+            margin-bottom: 22px;
+        }
+
+        label {
+            display: block;
+            font-size: 13px;
+            margin-bottom: 8px;
+            color: #d1d1d1;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper i {
+            position: absolute;
+            top: 50%;
+            left: 15px;
+            transform: translateY(-50%);
+            color: #444;
+            font-size: 16px;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px 14px 14px 48px;
+            border-radius: 12px;
+            border: none;
+            background-color: #eef3ff;
+            color: #222;
+            font-size: 14px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        input:focus {
+            background-color: #ffffff;
+            box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.3);
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 15px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(to right, #3498db, #217dbb);
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            transition: 0.3s;
+            box-shadow: 0 5px 15px rgba(33, 150, 243, 0.2);
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            background: linear-gradient(to right, #2980b9, #1c6394);
+            box-shadow: 0 8px 20px rgba(33, 150, 243, 0.4);
+        }
+
+        .footer-text {
+            margin-top: 35px;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.3);
+            letter-spacing: 0.5px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="background">
+        <div class="circle"></div>
+        <div class="circle :nth-child(2)"></div>
+    </div>
+
+    <div class="login-card">
+        <div class="logo-box">
+            <i class="fas fa-mobile-alt"></i>
+        </div>
+
+        <h1>KONTER PRO</h1>
+        <p class="subtitle">Modern Accounting System</p>
+
+        <form id="loginForm">
+            <div class="input-group">
+                <label>Username</label>
+                <div class="input-wrapper">
+                    <i class="far fa-user"></i>
+                    <input type="text" id="username" placeholder="Masukkan username" autocomplete="off" required>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label>Password</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="password" placeholder="••••••••" required>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-login">LOGIN SEKARANG</button>
+        </form>
+
+        <p class="footer-text">© 2026 Konter Pro • All Rights Reserved</p>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const user = document.getElementById('username').value;
+            const pass = document.getElementById('password').value;
+
+            // Validasi Kredensial
+            if (user === 'konter' && pass === 'Sukses111') {
+                alert('Login Berhasil! Mengalihkan ke sistem...');
+                
+                // Pastikan file dashboard Anda bernama dashboard.html dan berada di folder yang sama
+                window.location.href = "dashboard.html"; 
+                
+            } else {
+                alert('Akses Ditolak! Username atau Password salah.');
+            }
+        });
+    </script>
+</body>
+</html>

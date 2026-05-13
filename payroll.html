@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payroll Karyawan - Konter Pro</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <style>
+        *{ margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
+        body{ background:#f4f7fb; display:flex; min-height:100vh; color:#111827; }
+
+        /* SIDEBAR */
+        .sidebar{ width:290px; background: linear-gradient(180deg, #081028, #111f55); color:white; padding:28px 20px; position:fixed; left:0; top:0; height:100vh; display:flex; flex-direction:column; z-index: 100; }
+        .logo{ display:flex; align-items:center; gap:16px; margin-bottom:45px; }
+        .logo-box{ width:58px; height:58px; border-radius:18px; background: linear-gradient(135deg, #2563eb, #38bdf8); display:flex; align-items:center; justify-content:center; font-size:22px; box-shadow: 0 10px 25px rgba(37,99,235,0.45); }
+        .logo h1{ font-size:20px; line-height:1.1; font-weight:800; }
+        
+        .menu{ list-style:none; display:flex; flex-direction:column; gap:12px; flex:1; }
+        .menu a{ text-decoration:none; color:#dbe4ff; display:flex; align-items:center; gap:14px; padding:16px 18px; border-radius:18px; transition:0.3s; font-weight:600; font-size:15px; }
+        .menu a.active{ background: linear-gradient(90deg, #2563eb, #38bdf8); color:white; box-shadow: 0 12px 25px rgba(37,99,235,0.35); }
+
+        .logout{ margin-top:20px; }
+        .logout a{ display:flex; align-items:center; justify-content:center; gap:10px; padding:16px; border-radius:20px; background: rgba(239,68,68,0.15); color:#fca5a5; text-decoration:none; font-weight:700; }
+
+        /* MAIN CONTENT */
+        .main{ margin-left:290px; width:calc(100% - 290px); padding:35px; }
+        .header-payroll { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+        .header-payroll h2 { font-size: 28px; font-weight: 800; color: #1e3a8a; }
+
+        .filter-card { background: white; padding: 15px 25px; border-radius: 20px; display: flex; align-items: center; gap: 15px; border: 2px solid #e2e8f0; }
+        .filter-card select { padding: 10px; border-radius: 10px; border: 1px solid #cbd5e1; outline: none; font-weight: 600; }
+        .btn-update { background: #1e3a8a; color: white; border: none; padding: 10px 20px; border-radius: 10px; cursor: pointer; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+
+        /* TABLE */
+        .card-table { background: white; border-radius: 25px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        table { width: 100%; border-collapse: collapse; }
+        thead { background: #2e4a9e; color: white; }
+        th { padding: 18px; text-align: left; font-size: 13px; text-transform: uppercase; }
+        td { padding: 20px 18px; border-bottom: 1px solid #f1f5f9; font-weight: 600; font-size: 14px; }
+
+        .text-bonus { color: #10b981; }
+        .text-kasbon { color: #ef4444; }
+        .text-total { color: #2563eb; font-weight: 800; font-size: 16px; }
+
+        .btn-aksi { padding: 8px 12px; border-radius: 8px; border: 1px solid #cbd5e1; background: white; cursor: pointer; font-weight: 700; display: inline-flex; align-items: center; gap: 5px; transition: 0.2s; font-size: 11px; }
+        .btn-pdf { background: #1e3a8a; color: white; border: none; }
+        .btn-aksi:hover { background: #f8faff; transform: translateY(-2px); }
+
+        /* MODAL DETAIL */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: none; align-items: center; justify-content: center; z-index: 1000; backdrop-filter: blur(4px); }
+        .modal-content { background: white; width: 450px; border-radius: 25px; padding: 30px; position: relative; box-shadow: 0 20px 50px rgba(0,0,0,0.2); }
+        .modal-header { border-bottom: 2px solid #f1f5f9; padding-bottom: 15px; margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center; }
+        .detail-item { display: flex; justify-content: space-between; margin-bottom: 12px; font-weight: 500; font-size: 14px; }
+        .detail-item span:last-child { font-weight: 700; color: #1e293b; }
+        .total-line { border-top: 2px dashed #e2e8f0; margin-top: 15px; padding-top: 15px; font-size: 18px !important; }
+
+        @media(max-width:768px){
+            .sidebar{ width:80px; padding:20px 12px; }
+            .logo-text, .menu a span, .logout a span{ display:none; }
+            .main{ margin-left:80px; width:calc(100% - 80px); }
+        }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="logo">
+            <div class="logo-box"><i class="fas fa-mobile-alt"></i></div>
+            <div class="logo-text"><h1>KONTER<br>PRO</h1></div>
+        </div>
+        <ul class="menu">
+            <li><a href="dashboard.html"><i class="fas fa-th-large"></i> <span>Dashboard</span></a></li>
+            <li><a href="karyawan.html"><i class="fas fa-users"></i> <span>Data Karyawan</span></a></li>
+            <li><a href="bonus.html"><i class="fas fa-gift"></i> <span>Bonus Penjualan</span></a></li>
+            <li><a href="kehadiran.html"><i class="fas fa-calendar-check"></i> <span>Kehadiran</span></a></li>
+            <li><a href="kasbon.html"><i class="fas fa-wallet"></i> <span>Data Kasbon</span></a></li>
+            <li><a href="payroll.html" class="active"><i class="fas fa-file-invoice-dollar"></i> <span>Payroll Karyawan</span></a></li>
+        </ul>
+        <div class="logout"><a href="index.html"><i class="fas fa-sign-out-alt"></i> <span>Keluar</span></a></div>
+    </aside>
+
+    <main class="main">
+        <div class="header-payroll">
+            <div>
+                <h2>Payroll Karyawan</h2>
+                <p id="label-periode" style="color:#64748b; font-weight:600;">Periode: Mei 2026</p>
+            </div>
+            <div class="filter-card">
+                <select id="f-bulan">
+                    <option value="01">Januari</option><option value="02">Februari</option><option value="03">Maret</option><option value="04">April</option>
+                    <option value="05" selected>Mei</option><option value="06">Juni</option><option value="07">Juli</option><option value="08">Agustus</option>
+                    <option value="09">September</option><option value="10">Oktober</option><option value="11">November</option><option value="12">Desember</option>
+                </select>
+                <select id="f-tahun"><option value="2026" selected>2026</option><option value="2025">2025</option></select>
+                <button class="btn-update" onclick="prosesPayroll()"><i class="fas fa-sync-alt"></i> UPDATE</button>
+            </div>
+        </div>
+
+        <div class="card-table">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Karyawan</th>
+                        <th>Hadir (Hari)</th>
+                        <th>Bonus</th>
+                        <th>Kasbon</th>
+                        <th>Gaji Diterima</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody-payroll"></tbody>
+            </table>
+        </div>
+    </main>
+
+    <div class="modal-overlay" id="modalDetail">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 style="color:#1e3a8a;">Detail Rincian Gaji</h3>
+                <i class="fas fa-times" style="cursor:pointer;" onclick="tutupModal()"></i>
+            </div>
+            <div id="m-konten"></div>
+            <div style="margin-top: 25px; display: flex; gap: 10px;">
+                <button onclick="tutupModal()" style="background:#1e3a8a; color:white; border:none; padding:12px; border-radius:12px; flex:1; cursor:pointer; font-weight:700;">Tutup</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function prosesPayroll() {
+            const bulan = document.getElementById('f-bulan').value;
+            const tahun = document.getElementById('f-tahun').value;
+            const bulanNama = document.getElementById('f-bulan').options[document.getElementById('f-bulan').selectedIndex].text;
+            document.getElementById('label-periode').innerText = `Periode: ${bulanNama} ${tahun}`;
+
+            const dataKaryawan = JSON.parse(localStorage.getItem('karyawan_pro')) || [];
+            const dataHadir = JSON.parse(localStorage.getItem('kehadiran_pro')) || [];
+            const dataBonus = JSON.parse(localStorage.getItem('bonus_pro')) || [];
+            const dataKasbon = JSON.parse(localStorage.getItem('kasbon_pro')) || [];
+
+            const tbody = document.getElementById('tbody-payroll');
+            tbody.innerHTML = "";
+
+            dataKaryawan.forEach(k => {
+                // Hitung Kehadiran (Hanya angka hari)
+                const totalHadir = dataHadir.filter(h => h.nama === k.nama && h.status === "Hadir" && h.tanggal.startsWith(`${tahun}-${bulan}`)).length;
+                
+                // Hitung Keuangan (Bonus & Kasbon)
+                const totalB = dataBonus.filter(b => b.nama === k.nama && b.tanggal.startsWith(`${tahun}-${bulan}`)).reduce((s, i) => s + parseInt(i.jumlah), 0);
+                const totalK = dataKasbon.filter(ks => ks.nama === k.nama && ks.tanggal.startsWith(`${tahun}-${bulan}`)).reduce((s, i) => s + parseInt(i.jumlah), 0);
+                
+                // Rumus: Hanya Bonus dikurangi Kasbon
+                const grand = totalB - totalK;
+
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${k.nama}</td>
+                        <td style="color:#64748b;">${totalHadir} Hari</td>
+                        <td class="text-bonus">Rp ${totalB.toLocaleString('id-ID')}</td>
+                        <td class="text-kasbon">-Rp ${totalK.toLocaleString('id-ID')}</td>
+                        <td class="text-total">Rp ${grand.toLocaleString('id-ID')}</td>
+                        <td>
+                            <button class="btn-aksi" onclick="lihatDetail('${k.nama}', ${totalHadir}, ${totalB}, ${totalK})"><i class="fas fa-eye"></i> DETAIL</button>
+                            <button class="btn-aksi btn-pdf" onclick="downloadPDF('${k.nama}', '${bulanNama} ${tahun}', ${totalHadir}, ${totalB}, ${totalK})"><i class="fas fa-download"></i> PDF</button>
+                        </td>
+                    </tr>`;
+            });
+        }
+
+        function lihatDetail(nama, hadir, bonus, kasbon) {
+            const grand = bonus - kasbon;
+            document.getElementById('m-konten').innerHTML = `
+                <div class="detail-item"><span>Nama Karyawan</span><span>${nama}</span></div>
+                <div class="detail-item"><span>Total Kehadiran</span><span>${hadir} Hari</span></div>
+                <hr style="margin:10px 0; border:0; border-top:1px solid #eee;">
+                <div class="detail-item"><span class="text-bonus">Total Bonus (+)</span><span>Rp ${bonus.toLocaleString()}</span></div>
+                <div class="detail-item"><span class="text-kasbon">Total Kasbon (-)</span><span>Rp ${kasbon.toLocaleString()}</span></div>
+                <div class="detail-item total-line"><span>TOTAL GAJI</span><span style="color:#2563eb">Rp ${grand.toLocaleString()}</span></div>`;
+            document.getElementById('modalDetail').style.display = 'flex';
+        }
+
+        function tutupModal() { document.getElementById('modalDetail').style.display = 'none'; }
+
+        function downloadPDF(nama, periode, hadir, bonus, kasbon) {
+            const grand = bonus - kasbon;
+            const element = document.createElement('div');
+            element.innerHTML = `
+                <div style="padding:40px; font-family:sans-serif; border:5px solid #1e3a8a; border-radius:15px;">
+                    <h1 style="color:#1e3a8a; text-align:center; margin-bottom:5px;">KONTER PRO</h1>
+                    <p style="text-align:center; margin-bottom:20px; color:#64748b;">Official Salary Slip</p>
+                    <div style="display:flex; justify-content:space-between; margin-bottom:30px; border-top:2px solid #eee; padding-top:10px;">
+                        <span><b>Karyawan:</b> ${nama}</span>
+                        <span><b>Periode:</b> ${periode}</span>
+                    </div>
+                    <table style="width:100%; border-collapse:collapse;">
+                        <tr style="background:#f8faff;"><td style="padding:10px; border:1px solid #eee;">Total Kehadiran</td><td style="padding:10px; border:1px solid #eee; text-align:right;">${hadir} Hari</td></tr>
+                        <tr><td style="padding:10px; border:1px solid #eee;">Bonus Penjualan</td><td style="padding:10px; border:1px solid #eee; text-align:right; color:green;">+ Rp ${bonus.toLocaleString()}</td></tr>
+                        <tr><td style="padding:10px; border:1px solid #eee;">Potongan Kasbon</td><td style="padding:10px; border:1px solid #eee; text-align:right; color:red;">- Rp ${kasbon.toLocaleString()}</td></tr>
+                        <tr style="background:#1e3a8a; color:white;"><td style="padding:15px; font-size:18px;"><b>TOTAL TERIMA</b></td><td style="padding:15px; font-size:18px; text-align:right;"><b>Rp ${grand.toLocaleString()}</b></td></tr>
+                    </table>
+                    <p style="margin-top:40px; font-size:11px; color:#94a3b8; text-align:center;">Dokumen ini sah dihasilkan oleh sistem Konter Pro pada ${new Date().toLocaleString()}</p>
+                </div>`;
+            
+            const opt = {
+                margin: 0.5,
+                filename: `Slip_${nama}_${periode}.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2 },
+                jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+            };
+            html2pdf().set(opt).from(element).save();
+        }
+
+        window.onload = prosesPayroll;
+    </script>
+</body>
+</html>

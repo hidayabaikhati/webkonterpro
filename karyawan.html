@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Karyawan - Konter Pro</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+
+    <style>
+        *{ margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
+        body{ background:#f4f7fb; display:flex; min-height:100vh; color:#111827; }
+
+        /* SIDEBAR (NAVIGASI) - DISAMAKAN */
+        .sidebar{ width:290px; background: linear-gradient(180deg, #081028, #111f55); color:white; padding:28px 20px; position:fixed; left:0; top:0; height:100vh; display:flex; flex-direction:column; box-shadow: 10px 0 40px rgba(0,0,0,0.15); z-index: 100; }
+        .logo{ display:flex; align-items:center; gap:16px; margin-bottom:45px; }
+        .logo-box{ width:58px; height:58px; border-radius:18px; background: linear-gradient(135deg, #2563eb, #38bdf8); display:flex; align-items:center; justify-content:center; font-size:22px; box-shadow: 0 10px 25px rgba(37,99,235,0.45); }
+        .logo h1{ font-size:20px; line-height:1.1; font-weight:800; }
+        .logo p{ color:#cbd5e1; font-size:12px; margin-top:4px; }
+
+        .menu{ list-style:none; display:flex; flex-direction:column; gap:12px; flex:1; }
+        .menu a{ text-decoration:none; color:#dbe4ff; display:flex; align-items:center; gap:14px; padding:16px 18px; border-radius:18px; transition:0.3s; font-weight:600; font-size:15px; }
+        .menu a i{ width:20px; text-align:center; font-size:18px; }
+        .menu a:hover{ background: rgba(255,255,255,0.08); transform:translateX(4px); }
+        .menu a.active{ background: linear-gradient(90deg, #2563eb, #38bdf8); color:white; box-shadow: 0 12px 25px rgba(37,99,235,0.35); }
+
+        .logout{ margin-top:20px; }
+        .logout a{ display:flex; align-items:center; justify-content:center; gap:10px; padding:16px; border-radius:20px; background: rgba(239,68,68,0.15); color:#fca5a5; text-decoration:none; font-weight:700; transition:0.3s; }
+        .logout a:hover{ background:#ef4444; color:white; }
+
+        /* MAIN CONTENT */
+        .main{ margin-left:290px; width:calc(100% - 290px); padding:35px; }
+        .top-title{ margin-bottom:28px; display: flex; justify-content: space-between; align-items: flex-end; }
+        .top-title h2{ font-size:32px; font-weight:800; color:#111827; }
+        .top-title p{ color:#64748b; font-size:15px; }
+
+        /* BUTTON TAMBAH */
+        .btn-tambah { background: linear-gradient(90deg, #2563eb, #3b82f6); color: white; border: none; padding: 14px 25px; border-radius: 16px; font-weight: 700; cursor: pointer; transition: 0.3s; display: flex; align-items: center; gap: 10px; font-size: 14px; }
+        .btn-tambah:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(37,99,235,0.25); }
+
+        /* CARD & TABLE */
+        .card{ background:white; border-radius:28px; padding:30px; border:1px solid #e2e8f0; box-shadow: 0 10px 30px rgba(15,23,42,0.04); }
+        table{ width:100%; border-collapse:collapse; }
+        th{ text-align:left; padding:16px; color:#64748b; font-size:13px; border-bottom: 1px solid #e2e8f0; text-transform: uppercase; }
+        td{ padding:18px 16px; border-bottom: 1px solid #edf2f7; font-weight:600; font-size: 14px; }
+        
+        .badge-jabatan { background: #f1f5f9; color: #475569; padding: 6px 12px; border-radius: 10px; font-size: 12px; }
+
+        /* MODAL */
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(8, 16, 40, 0.6); z-index: 1000; backdrop-filter: blur(4px); }
+        .modal-content { background: white; width: 450px; margin: 100px auto; padding: 35px; border-radius: 28px; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.25); position: relative; }
+        .modal-header h3 { font-size: 22px; font-weight: 800; margin-bottom: 20px; color: #081028; }
+        
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 8px; color: #64748b; }
+        .form-group input { width: 100%; padding: 14px; border: 2px solid #f1f5f9; border-radius: 14px; outline: none; transition: 0.3s; font-size: 14px; }
+        .form-group input:focus { border-color: #2563eb; background: #fff; }
+
+        .btn-save { background: #2563eb; color: white; border: none; width: 100%; padding: 15px; border-radius: 15px; font-weight: 700; cursor: pointer; font-size: 16px; transition: 0.3s; }
+        .btn-save:hover { background: #1d4ed8; }
+
+        @media(max-width:768px){
+            .sidebar{ width:80px; padding:20px 12px; }
+            .logo-text, .menu a span, .logout a span, .top-title p{ display:none; }
+            .main{ margin-left:80px; width:calc(100% - 80px); padding:20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="logo">
+            <div class="logo-box"><i class="fas fa-mobile-alt"></i></div>
+            <div class="logo-text">
+                <h1>KONTER<br>PRO</h1>
+                <p>Accounting System</p>
+            </div>
+        </div>
+        <ul class="menu">
+            <li><a href="dashboard.html"><i class="fas fa-th-large"></i> <span>Dashboard</span></a></li>
+            <li><a href="karyawan.html" class="active"><i class="fas fa-users"></i> <span>Data Karyawan</span></a></li>
+            <li><a href="bonus.html"><i class="fas fa-gift"></i> <span>Bonus Penjualan</span></a></li>
+            <li><a href="kehadiran.html"><i class="fas fa-calendar-check"></i> <span>Kehadiran</span></a></li>
+            <li><a href="kasbon.html"><i class="fas fa-wallet"></i> <span>Data Kasbon</span></a></li>
+            <li><a href="payroll.html"><i class="fas fa-file-invoice-dollar"></i> <span>Payroll Karyawan</span></a></li>
+        </ul>
+        <div class="logout">
+            <a href="index.html"><i class="fas fa-sign-out-alt"></i> <span>Keluar</span></a>
+        </div>
+    </aside>
+
+    <main class="main">
+        <div class="top-title">
+            <div>
+                <h2>Database Karyawan</h2>
+                <p>Kelola data lengkap karyawan konter Anda.</p>
+            </div>
+            <button class="btn-tambah" onclick="toggleModal(true)">
+                <i class="fas fa-user-plus"></i> Tambah Karyawan
+            </button>
+        </div>
+
+        <div class="card">
+            <table>
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Nama Lengkap</th>
+                        <th>Jabatan</th>
+                        <th>Nomor HP</th>
+                        <th style="text-align: center;">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="employeeTable">
+                    </tbody>
+            </table>
+        </div>
+    </main>
+
+    <div id="modalForm" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle">Tambah Karyawan Baru</h3>
+            </div>
+            <input type="hidden" id="editIndex">
+            <div class="form-group">
+                <label>Nama Lengkap</label>
+                <input type="text" id="nama" placeholder="Masukkan nama karyawan">
+            </div>
+            <div class="form-group">
+                <label>Jabatan</label>
+                <input type="text" id="jabatan" placeholder="Contoh: Admin / Teknisi">
+            </div>
+            <div class="form-group">
+                <label>Nomor HP</label>
+                <input type="text" id="nohp" placeholder="08xxxxxxxxxx">
+            </div>
+            <button class="btn-save" onclick="simpanKaryawan()">Simpan Data</button>
+            <button onclick="toggleModal(false)" style="background:none; border:none; width:100%; margin-top:15px; color:#64748b; cursor:pointer; font-weight:600;">Batal</button>
+        </div>
+    </div>
+
+    <script>
+        // PENTING: Menggunakan key yang sama agar terbaca di halaman kehadiran
+        let dataKaryawan = JSON.parse(localStorage.getItem('karyawan_pro')) || [];
+
+        function renderTable() {
+            const tbody = document.getElementById('employeeTable');
+            tbody.innerHTML = "";
+
+            if(dataKaryawan.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:30px; color:#94a3b8;">Belum ada data karyawan terdaftar.</td></tr>';
+                return;
+            }
+
+            dataKaryawan.forEach((k, index) => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${k.nama}</td>
+                        <td><span class="badge-jabatan">${k.jabatan}</span></td>
+                        <td>${k.nohp}</td>
+                        <td style="text-align: center;">
+                            <button onclick="editKaryawan(${index})" style="color:#f59e0b; border:none; background:none; cursor:pointer; font-size:16px; margin-right:15px;">
+                                <i class="fas fa-edit"></i>
+                            </button>
+                            <button onclick="hapusKaryawan(${index})" style="color:#ef4444; border:none; background:none; cursor:pointer; font-size:16px;">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function toggleModal(show) {
+            document.getElementById('modalForm').style.display = show ? 'block' : 'none';
+            if(!show) {
+                document.getElementById('nama').value = "";
+                document.getElementById('jabatan').value = "";
+                document.getElementById('nohp').value = "";
+                document.getElementById('editIndex').value = "";
+                document.getElementById('modalTitle').innerText = "Tambah Karyawan Baru";
+            }
+        }
+
+        function simpanKaryawan() {
+            const nama = document.getElementById('nama').value;
+            const jabatan = document.getElementById('jabatan').value;
+            const nohp = document.getElementById('nohp').value;
+            const editIndex = document.getElementById('editIndex').value;
+
+            if(!nama || !jabatan || !nohp) return alert("Harap isi semua kolom!");
+
+            if(editIndex === "") {
+                // Tambah Baru
+                dataKaryawan.push({ nama, jabatan, nohp });
+            } else {
+                // Update yang ada
+                dataKaryawan[editIndex] = { nama, jabatan, nohp };
+            }
+
+            localStorage.setItem('karyawan_pro', JSON.stringify(dataKaryawan));
+            toggleModal(false);
+            renderTable();
+        }
+
+        function hapusKaryawan(index) {
+            if(confirm("Hapus data karyawan ini?")) {
+                dataKaryawan.splice(index, 1);
+                localStorage.setItem('karyawan_pro', JSON.stringify(dataKaryawan));
+                renderTable();
+            }
+        }
+
+        function editKaryawan(index) {
+            const k = dataKaryawan[index];
+            document.getElementById('nama').value = k.nama;
+            document.getElementById('jabatan').value = k.jabatan;
+            document.getElementById('nohp').value = k.nohp;
+            document.getElementById('editIndex').value = index;
+            document.getElementById('modalTitle').innerText = "Edit Data Karyawan";
+            document.getElementById('modalForm').style.display = 'block';
+        }
+
+        // Jalankan render tabel saat halaman dimuat
+        renderTable();
+    </script>
+</body>
+</html>

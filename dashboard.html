@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Overview - Konter Pro</title>
+
+    <!-- FONT -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- ICON -->
+    <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+
+    <style>
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+            font-family:'Poppins',sans-serif;
+        }
+
+        body{
+            background:#f4f7fb;
+            display:flex;
+            min-height:100vh;
+            color:#111827;
+        }
+
+        /* =========================
+        SIDEBAR
+        ========================= */
+
+        .sidebar{
+
+            width:290px;
+            background:
+            linear-gradient(
+                180deg,
+                #081028,
+                #111f55
+            );
+
+            color:white;
+
+            padding:28px 20px;
+
+            position:fixed;
+
+            left:0;
+            top:0;
+
+            height:100vh;
+
+            display:flex;
+            flex-direction:column;
+
+            box-shadow:
+            10px 0 40px rgba(0,0,0,0.15);
+
+            z-index:100;
+        }
+
+        .logo{
+            display:flex;
+            align-items:center;
+            gap:16px;
+            margin-bottom:45px;
+        }
+
+        .logo-box{
+
+            width:58px;
+            height:58px;
+
+            border-radius:18px;
+
+            background:
+            linear-gradient(
+                135deg,
+                #2563eb,
+                #38bdf8
+            );
+
+            display:flex;
+            align-items:center;
+            justify-content:center;
+
+            font-size:22px;
+
+            box-shadow:
+            0 10px 25px rgba(37,99,235,0.45);
+        }
+
+        .logo h1{
+            font-size:20px;
+            line-height:1.1;
+            font-weight:800;
+        }
+
+        .logo p{
+            color:#cbd5e1;
+            font-size:12px;
+            margin-top:4px;
+        }
+
+        /* MENU */
+
+        .menu{
+            list-style:none;
+            display:flex;
+            flex-direction:column;
+            gap:12px;
+            flex:1;
+        }
+
+        .menu a{
+
+            text-decoration:none;
+            color:#dbe4ff;
+
+            display:flex;
+            align-items:center;
+            gap:14px;
+
+            padding:16px 18px;
+
+            border-radius:18px;
+
+            transition:0.3s;
+
+            font-weight:600;
+            font-size:15px;
+
+            position:relative;
+        }
+
+        .menu a i{
+            width:20px;
+            text-align:center;
+            font-size:18px;
+        }
+
+        .menu a:hover{
+
+            background:
+            rgba(255,255,255,0.08);
+
+            transform:translateX(4px);
+        }
+
+        .menu a.active{
+
+            background:
+            linear-gradient(
+                90deg,
+                #2563eb,
+                #38bdf8
+            );
+
+            color:white;
+
+            box-shadow:
+            0 12px 25px rgba(37,99,235,0.35);
+        }
+
+        .menu a.active::after{
+            content:'';
+
+            position:absolute;
+
+            right:18px;
+
+            width:8px;
+            height:8px;
+
+            border-radius:50%;
+
+            background:white;
+        }
+
+        /* LOGOUT */
+
+        .logout{
+            margin-top:20px;
+        }
+
+        .logout a{
+
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            gap:10px;
+
+            padding:16px;
+
+            border-radius:20px;
+
+            background:
+            rgba(239,68,68,0.15);
+
+            color:#fca5a5;
+
+            text-decoration:none;
+
+            font-weight:700;
+
+            transition:0.3s;
+        }
+
+        .logout a:hover{
+            background:#ef4444;
+            color:white;
+        }
+
+        /* =========================
+        MAIN CONTENT
+        ========================= */
+
+        .main-content{
+
+            margin-left:290px;
+
+            width:calc(100% - 290px);
+
+            padding:35px;
+        }
+
+        /* HEADER */
+
+        .header{
+
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+
+            margin-bottom:30px;
+        }
+
+        .welcome-text h1{
+
+            font-size:34px;
+            font-weight:800;
+
+            color:#111827;
+        }
+
+        .welcome-text p{
+
+            color:#64748b;
+            margin-top:6px;
+
+            font-size:15px;
+        }
+
+        /* USER */
+
+        .user-info{
+
+            display:flex;
+            align-items:center;
+            gap:12px;
+
+            background:white;
+
+            padding:12px 20px;
+
+            border-radius:50px;
+
+            border:1px solid #e2e8f0;
+
+            box-shadow:
+            0 5px 20px rgba(0,0,0,0.04);
+        }
+
+        .user-info i{
+            color:#2563eb;
+            font-size:22px;
+        }
+
+        .user-info span{
+            font-weight:600;
+            color:#334155;
+        }
+
+        /* =========================
+        WELCOME CARD
+        ========================= */
+
+        .welcome-card{
+
+            position:relative;
+
+            overflow:hidden;
+
+            background:
+            linear-gradient(
+                135deg,
+                #2563eb,
+                #38bdf8
+            );
+
+            border-radius:35px;
+
+            padding:60px 50px;
+
+            min-height:420px;
+
+            color:white;
+
+            display:flex;
+            flex-direction:column;
+            justify-content:center;
+
+            box-shadow:
+            0 20px 50px rgba(37,99,235,0.25);
+        }
+
+        .welcome-card::before{
+
+            content:'';
+
+            position:absolute;
+
+            width:320px;
+            height:320px;
+
+            border-radius:50%;
+
+            background:
+            rgba(255,255,255,0.08);
+
+            top:-120px;
+            right:-100px;
+        }
+
+        .welcome-card::after{
+
+            content:'';
+
+            position:absolute;
+
+            width:220px;
+            height:220px;
+
+            border-radius:50%;
+
+            background:
+            rgba(255,255,255,0.06);
+
+            bottom:-80px;
+            left:-60px;
+        }
+
+        .welcome-card h2{
+
+            position:relative;
+            z-index:2;
+
+            font-size:52px;
+            line-height:1.2;
+
+            font-weight:800;
+
+            margin-bottom:20px;
+        }
+
+        .welcome-card p{
+
+            position:relative;
+            z-index:2;
+
+            max-width:700px;
+
+            font-size:18px;
+
+            line-height:1.8;
+
+            color:rgba(255,255,255,0.92);
+        }
+
+        .dashboard-icon{
+
+            position:absolute;
+
+            right:50px;
+            bottom:40px;
+
+            font-size:130px;
+
+            color:
+            rgba(255,255,255,0.12);
+        }
+
+        /* =========================
+        RESPONSIVE
+        ========================= */
+
+        @media(max-width:768px){
+
+            .sidebar{
+                width:80px;
+                padding:20px 12px;
+            }
+
+            .logo-text,
+            .menu a span,
+            .logout a span{
+                display:none;
+            }
+
+            .main-content{
+                margin-left:80px;
+                width:calc(100% - 80px);
+                padding:20px;
+            }
+
+            .welcome-card{
+                padding:40px 25px;
+                min-height:320px;
+            }
+
+            .welcome-card h2{
+                font-size:34px;
+            }
+
+            .welcome-card p{
+                font-size:15px;
+            }
+
+            .dashboard-icon{
+                font-size:90px;
+                right:20px;
+            }
+
+            .header{
+                flex-direction:column;
+                align-items:flex-start;
+                gap:20px;
+            }
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+
+            <div class="logo-box">
+                <i class="fas fa-mobile-alt"></i>
+            </div>
+
+            <div class="logo-text">
+                <h1>KONTER<br>PRO</h1>
+                <p>Accounting System</p>
+            </div>
+
+        </div>
+
+        <ul class="menu">
+
+            <li>
+                <a href="dashboard.html" class="active">
+                    <i class="fas fa-th-large"></i>
+                    <span>Dashboard</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="karyawan.html">
+                    <i class="fas fa-users"></i>
+                    <span>Data Karyawan</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="bonus.html">
+                    <i class="fas fa-gift"></i>
+                    <span>Bonus Penjualan</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="kehadiran.html">
+                    <i class="fas fa-calendar-check"></i>
+                    <span>Kehadiran</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="kasbon.html">
+                    <i class="fas fa-wallet"></i>
+                    <span>Data Kasbon</span>
+                </a>
+            </li>
+
+            <li>
+                <a href="payroll.html">
+                    <i class="fas fa-file-invoice-dollar"></i>
+                    <span>Payroll Karyawan</span>
+                </a>
+            </li>
+
+        </ul>
+
+        <div class="logout">
+
+            <a href="index.html"
+               onclick="return confirm('Apakah Anda yakin ingin keluar?')">
+
+                <i class="fas fa-sign-out-alt"></i>
+
+                <span>Keluar</span>
+
+            </a>
+
+        </div>
+
+    </aside>
+
+    <!-- MAIN CONTENT -->
+
+    <main class="main-content">
+
+        <!-- HEADER -->
+
+        <div class="header">
+
+            <div class="welcome-text">
+
+                <h1>Dashboard Overview</h1>
+
+                <p>
+                    Selamat datang kembali di sistem Konter Pro
+                </p>
+
+            </div>
+
+            <div class="user-info">
+
+                <i class="fas fa-user-circle"></i>
+
+                <span>konter</span>
+
+            </div>
+
+        </div>
+
+        <!-- WELCOME CARD -->
+
+        <div class="welcome-card">
+
+            <h2>
+                Selamat Datang <br>
+                di Dashboard
+            </h2>
+
+            <p>
+                Kelola data karyawan, payroll, bonus penjualan,
+                kasbon, dan kehadiran dengan tampilan modern,
+                cepat, dan profesional menggunakan sistem
+                Konter Pro.
+            </p>
+
+            <div class="dashboard-icon">
+                <i class="fas fa-chart-line"></i>
+            </div>
+
+        </div>
+
+    </main>
+
+</body>
+</html>

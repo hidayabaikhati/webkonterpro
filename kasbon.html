@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Kasbon Karyawan - Konter Pro</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"/>
+
+    <style>
+        *{ margin:0; padding:0; box-sizing:border-box; font-family:'Poppins',sans-serif; }
+        body{ background:#f4f7fb; display:flex; min-height:100vh; color:#111827; }
+
+        /* SIDEBAR */
+        .sidebar{ width:290px; background: linear-gradient(180deg, #081028, #111f55); color:white; padding:28px 20px; position:fixed; left:0; top:0; height:100vh; display:flex; flex-direction:column; box-shadow: 10px 0 40px rgba(0,0,0,0.15); z-index: 100; }
+        .logo{ display:flex; align-items:center; gap:16px; margin-bottom:45px; }
+        .logo-box{ width:58px; height:58px; border-radius:18px; background: linear-gradient(135deg, #2563eb, #38bdf8); display:flex; align-items:center; justify-content:center; font-size:22px; box-shadow: 0 10px 25px rgba(37,99,235,0.45); }
+        .logo h1{ font-size:20px; line-height:1.1; font-weight:800; }
+        .logo p{ color:#cbd5e1; font-size:12px; margin-top:4px; }
+
+        .menu{ list-style:none; display:flex; flex-direction:column; gap:12px; flex:1; }
+        .menu a{ text-decoration:none; color:#dbe4ff; display:flex; align-items:center; gap:14px; padding:16px 18px; border-radius:18px; transition:0.3s; font-weight:600; font-size:15px; }
+        .menu a i{ width:20px; text-align:center; font-size:18px; }
+        .menu a:hover{ background: rgba(255,255,255,0.08); transform:translateX(4px); }
+        .menu a.active{ background: linear-gradient(90deg, #2563eb, #38bdf8); color:white; box-shadow: 0 12px 25px rgba(37,99,235,0.35); }
+
+        .logout{ margin-top:20px; }
+        .logout a{ display:flex; align-items:center; justify-content:center; gap:10px; padding:16px; border-radius:20px; background: rgba(239,68,68,0.15); color:#fca5a5; text-decoration:none; font-weight:700; transition:0.3s; }
+        .logout a:hover{ background:#ef4444; color:white; }
+
+        /* MAIN CONTENT */
+        .main{ margin-left:290px; width:calc(100% - 290px); padding:35px; }
+        .top-title{ margin-bottom:28px; }
+        .top-title h2{ font-size:32px; font-weight:800; color:#111827; }
+        .top-title p{ color:#64748b; font-size:15px; }
+
+        .card{ background:white; border-radius:28px; padding:30px; border:1px solid #e2e8f0; box-shadow: 0 10px 30px rgba(15,23,42,0.04); margin-bottom: 28px; }
+        .card h3{ font-size:20px; margin-bottom:20px; font-weight:700; display:flex; align-items:center; gap:10px; }
+        .card h3 i { color: #2563eb; }
+
+        /* FORM STYLES */
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+        .field { display: flex; flex-direction: column; gap: 8px; }
+        .field label { font-weight: 700; font-size: 13px; color: #334155; }
+        .input, select, textarea { padding: 14px; border-radius: 14px; border: 2px solid #f1f5f9; outline: none; font-size: 14px; transition: 0.3s; width: 100%; }
+        .input:focus, select:focus, textarea:focus { border-color: #2563eb; background: #f8faff; }
+        textarea { grid-column: span 3; resize: none; height: 100px; }
+
+        .btn-simpan { background: #2563eb; color: white; border: none; padding: 14px 28px; border-radius: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: 0.3s; width: fit-content; }
+        .btn-simpan:hover { background: #1d4ed8; transform: translateY(-2px); box-shadow: 0 8px 15px rgba(37,99,235,0.2); }
+
+        /* TABLE STYLES */
+        .filter-row { display: flex; justify-content: flex-end; align-items: center; gap: 10px; margin-bottom: 20px; }
+        .filter-row select { width: auto; padding: 10px 15px; }
+        .btn-filter { background: #2563eb; color: white; border: none; width: 40px; height: 40px; border-radius: 10px; cursor: pointer; }
+
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; padding: 15px; color: #64748b; font-size: 12px; border-bottom: 1px solid #e2e8f0; text-transform: uppercase; letter-spacing: 0.5px; }
+        td { padding: 18px 15px; border-bottom: 1px solid #f1f5f9; font-weight: 600; font-size: 14px; }
+        
+        .btn-hapus { color: #ef4444; background: rgba(239, 68, 68, 0.1); border: none; width: 35px; height: 35px; border-radius: 8px; cursor: pointer; transition: 0.2s; }
+        .btn-hapus:hover { background: #ef4444; color: white; }
+
+        @media(max-width:1000px){ .form-grid { grid-template-columns: 1fr; } textarea { grid-column: span 1; } }
+        @media(max-width:768px){
+            .sidebar{ width:80px; padding:20px 12px; }
+            .logo-text, .menu a span, .logout a span{ display:none; }
+            .main{ margin-left:80px; width:calc(100% - 80px); padding:20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <aside class="sidebar">
+        <div class="logo">
+            <div class="logo-box"><i class="fas fa-mobile-alt"></i></div>
+            <div class="logo-text">
+                <h1>KONTER<br>PRO</h1>
+                <p>Accounting System</p>
+            </div>
+        </div>
+        <ul class="menu">
+            <li><a href="dashboard.html"><i class="fas fa-th-large"></i> <span>Dashboard</span></a></li>
+            <li><a href="karyawan.html"><i class="fas fa-users"></i> <span>Data Karyawan</span></a></li>
+            <li><a href="bonus.html"><i class="fas fa-gift"></i> <span>Bonus Penjualan</span></a></li>
+            <li><a href="kehadiran.html"><i class="fas fa-calendar-check"></i> <span>Kehadiran</span></a></li>
+            <li><a href="kasbon.html" class="active"><i class="fas fa-wallet"></i> <span>Data Kasbon</span></a></li>
+            <li><a href="payroll.html"><i class="fas fa-file-invoice-dollar"></i> <span>Payroll Karyawan</span></a></li>
+        </ul>
+        <div class="logout">
+            <a href="index.html"><i class="fas fa-sign-out-alt"></i> <span>Keluar</span></a>
+        </div>
+    </aside>
+
+    <main class="main">
+        <div class="top-title">
+            <h2>Data Kasbon Karyawan</h2>
+            <p>Catat dan pantau pinjaman kasbon karyawan secara permanen.</p>
+        </div>
+
+        <div class="card">
+            <h3><i class="fas fa-plus-circle"></i> Tambah Kasbon Baru</h3>
+            <div class="form-grid">
+                <div class="field">
+                    <label>Nama Karyawan</label>
+                    <select id="select-karyawan">
+                        <option value="">-- Pilih Karyawan --</option>
+                    </select>
+                </div>
+                <div class="field">
+                    <label>Tanggal Pinjam</label>
+                    <input type="date" id="tgl-pinjam" class="input">
+                </div>
+                <div class="field">
+                    <label>Jumlah Kasbon (Rp)</label>
+                    <input type="number" id="jumlah-kasbon" class="input" placeholder="Contoh: 50000">
+                </div>
+                <textarea id="keterangan" placeholder="Alasan kasbon..."></textarea>
+            </div>
+            <button class="btn-simpan" onclick="simpanKasbon()">
+                <i class="fas fa-save"></i> Simpan Data Kasbon
+            </button>
+        </div>
+
+        <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3><i class="fas fa-history"></i> Riwayat Kasbon Periode</h3>
+                <div class="filter-row">
+                    <select id="filter-bulan">
+                        <option value="01">Januari</option><option value="02">Februari</option>
+                        <option value="03">Maret</option><option value="04">April</option>
+                        <option value="05" selected>Mei</option><option value="06">Juni</option>
+                        <option value="07">Juli</option><option value="08">Agustus</option>
+                        <option value="09">September</option><option value="10">Oktober</option>
+                        <option value="11">November</option><option value="12">Desember</option>
+                    </select>
+                    <select id="filter-tahun">
+                        <option value="2026" selected>2026</option>
+                        <option value="2025">2025</option>
+                    </select>
+                    <button class="btn-filter" onclick="renderRiwayat()"><i class="fas fa-filter"></i></button>
+                </div>
+            </div>
+
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Karyawan</th>
+                            <th>Tanggal</th>
+                            <th>Jumlah (Rp)</th>
+                            <th>Keterangan</th>
+                            <th style="text-align: center;">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="table-riwayat">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Ambil data dasar
+        let dataKaryawan = JSON.parse(localStorage.getItem('karyawan_pro')) || [];
+        let dataKasbon = JSON.parse(localStorage.getItem('kasbon_pro')) || [];
+
+        // 1. Isi Dropdown Karyawan
+        function initKaryawanDropdown() {
+            const select = document.getElementById('select-karyawan');
+            dataKaryawan.forEach(k => {
+                let opt = document.createElement('option');
+                opt.value = k.nama;
+                opt.innerText = k.nama;
+                select.appendChild(opt);
+            });
+        }
+
+        // 2. Simpan Kasbon
+        function simpanKasbon() {
+            const nama = document.getElementById('select-karyawan').value;
+            const tgl = document.getElementById('tgl-pinjam').value;
+            const jml = document.getElementById('jumlah-kasbon').value;
+            const ket = document.getElementById('keterangan').value;
+
+            if(!nama || !tgl || !jml) return alert("Lengkapi data yang wajib diisi!");
+
+            const record = {
+                id: Date.now(),
+                nama: nama,
+                tanggal: tgl,
+                jumlah: parseInt(jml),
+                keterangan: ket || "-"
+            };
+
+            dataKasbon.push(record);
+            localStorage.setItem('kasbon_pro', JSON.stringify(dataKasbon));
+            
+            alert("Kasbon berhasil dicatat!");
+            
+            // Reset Form
+            document.getElementById('jumlah-kasbon').value = "";
+            document.getElementById('keterangan').value = "";
+            
+            renderRiwayat();
+        }
+
+        // 3. Render Tabel Riwayat
+        function renderRiwayat() {
+            const tbody = document.getElementById('table-riwayat');
+            const bln = document.getElementById('filter-bulan').value;
+            const thn = document.getElementById('filter-tahun').value;
+
+            tbody.innerHTML = "";
+
+            // Filter data berdasarkan bulan dan tahun terpilih
+            const filtered = dataKasbon.filter(d => {
+                const dPart = d.tanggal.split('-'); // YYYY-MM-DD
+                return dPart[0] === thn && dPart[1] === bln;
+            });
+
+            if(filtered.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:30px; color:#94a3b8;">Tidak ada data kasbon pada periode ini.</td></tr>';
+                return;
+            }
+
+            filtered.forEach((d, index) => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td style="color:#94a3b8;">${index + 1}</td>
+                        <td>${d.nama}</td>
+                        <td style="font-size:12px;">${d.tanggal}</td>
+                        <td style="color:#ef4444;">Rp ${d.jumlah.toLocaleString('id-ID')}</td>
+                        <td style="font-weight:400; color:#64748b; font-size:13px;">${d.keterangan}</td>
+                        <td style="text-align: center;">
+                            <button class="btn-hapus" onclick="hapusKasbon(${d.id})">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        // 4. Hapus Kasbon
+        function hapusKasbon(id) {
+            if(confirm("Hapus catatan kasbon ini?")) {
+                dataKasbon = dataKasbon.filter(item => item.id !== id);
+                localStorage.setItem('kasbon_pro', JSON.stringify(dataKasbon));
+                renderRiwayat();
+            }
+        }
+
+        // Jalankan saat load
+        document.getElementById('tgl-pinjam').valueAsDate = new Date();
+        initKaryawanDropdown();
+        renderRiwayat();
+    </script>
+</body>
+</html>
